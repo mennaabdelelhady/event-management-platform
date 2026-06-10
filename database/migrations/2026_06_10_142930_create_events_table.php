@@ -13,6 +13,27 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->string('title');
+            $table->text('description');
+
+            $table->string('location');
+
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+
+            $table->string('image')->nullable();
+
+            $table->enum('status', [
+                'draft',
+                'published',
+                'cancelled'
+            ])->default('draft');
+
             $table->timestamps();
         });
     }

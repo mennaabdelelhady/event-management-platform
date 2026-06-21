@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateEventRequest;
+use App\Http\Resources\EventResource;
+
+
+
 
 class EventController extends Controller
 {
@@ -50,9 +55,17 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Event $event)
-    {
-        //
+    public function update(
+        UpdateEventRequest $request,
+        Event $event
+    ) {
+        $this->authorize('update', $event);
+
+        $event->update(
+            $request->validated()
+        );
+
+        return new EventResource($event);
     }
 
     /**
@@ -60,6 +73,12 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $this->authorize('delete', $event);
+
+        $event->delete();
+
+        return response()->json([
+            'message' => 'Event deleted successfully'
+        ]);
     }
 }

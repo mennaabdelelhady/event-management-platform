@@ -1,52 +1,85 @@
-# Event Management Platform
+# Event Management Platform API
 
-A RESTful Event Management Platform built with Laravel 12. This project allows organizers to create and manage events through secure API endpoints while following Laravel best practices.
+A RESTful Event Management Platform built with Laravel 12.
+
+This project allows organizers to create and manage events, create ticket types, and handle attendee bookings through secure JWT-authenticated API endpoints while following Laravel best practices.
 
 ## Features Implemented
 
-### Authentication & User Management
+### Authentication & Authorization
 
-* Laravel Breeze authentication
-* User roles:
+* JWT Authentication
+* User Registration
+* User Login
+* User Logout
+* Authenticated User Profile Endpoint
+* Role-Based Users:
 
   * Admin
   * Organizer
   * Attendee
-* User model configuration
 
-### Event Management API
+### Event Management
 
 * Create Event
 * List Events
 * View Single Event
 * Update Event
 * Delete Event
+* Event Status Management:
+
+  * Draft
+  * Published
+  * Cancelled
+
+### Ticket Management
+
+* Create Tickets for Events
+* List Event Tickets
+* Ticket Pricing
+* Ticket Quantity Management
+* Sold Tickets Tracking
+
+### Booking System
+
+* Book Event Tickets
+* Ticket Availability Validation
+* Automatic Sold Count Updates
+* Booking Records Management
+* Database Transaction Support
 
 ### Validation
 
-* Form Request validation
-* Event creation validation
-* Event update validation
+* Form Request Validation
+* Event Validation
+* Ticket Validation
+* Booking Validation
+
+### Authorization
+
+* Event Ownership Policies
+* Admin Gate Support
+* Protected API Routes
+
+### Security
+
+* JWT Protected Endpoints
+* Rate Limiting
+* Authorization Policies
+* Form Request Validation
 
 ### API Resources
 
-* Event API Resource
-* Consistent JSON responses
-
-### Database
-
-* MySQL integration
-* Event migration
-* User migration
-* Eloquent relationships
+* Event Resource
+* Consistent JSON Responses
 
 ## Tech Stack
 
 * Laravel 12
 * PHP 8.2+
 * MySQL
-* Laravel Breeze
-* Laravel Sanctum (API Setup)
+* JWT Authentication
+* Eloquent ORM
 * Postman
 
 ## Database Structure
@@ -79,40 +112,106 @@ A RESTful Event Management Platform built with Laravel 12. This project allows o
 | created_at  | timestamp       |
 | updated_at  | timestamp       |
 
+### Tickets Table
+
+| Column     | Type        |
+| ---------- | ----------- |
+| id         | bigint      |
+| event_id   | foreign key |
+| name       | string      |
+| price      | decimal     |
+| quantity   | integer     |
+| sold       | integer     |
+| created_at | timestamp   |
+| updated_at | timestamp   |
+
+### Bookings Table
+
+| Column     | Type        |
+| ---------- | ----------- |
+| id         | bigint      |
+| user_id    | foreign key |
+| ticket_id  | foreign key |
+| quantity   | integer     |
+| status     | enum        |
+| created_at | timestamp   |
+| updated_at | timestamp   |
+
+## Relationships
+
+User
+
+* hasMany Events
+* hasMany Bookings
+
+Event
+
+* belongsTo User
+* hasMany Tickets
+
+Ticket
+
+* belongsTo Event
+* hasMany Bookings
+
+Booking
+
+* belongsTo User
+* belongsTo Ticket
+
 ## API Endpoints
+
+### Authentication
+
+| Method | Endpoint      |
+| ------ | ------------- |
+| POST   | /api/register |
+| POST   | /api/login    |
+| POST   | /api/logout   |
+| GET    | /api/me       |
 
 ### Events
 
-| Method | Endpoint         | Description       |
-| ------ | ---------------- | ----------------- |
-| GET    | /api/events      | List all events   |
-| GET    | /api/events/{id} | Get event details |
-| POST   | /api/events      | Create event      |
-| PUT    | /api/events/{id} | Update event      |
-| DELETE | /api/events/{id} | Delete event      |
+| Method | Endpoint         |
+| ------ | ---------------- |
+| GET    | /api/events      |
+| GET    | /api/events/{id} |
+| POST   | /api/events      |
+| PUT    | /api/events/{id} |
+| DELETE | /api/events/{id} |
 
-## Sample Request
+### Tickets
 
-### Create Event
+| Method | Endpoint                    |
+| ------ | --------------------------- |
+| GET    | /api/events/{event}/tickets |
+| POST   | /api/events/{event}/tickets |
 
-POST `/api/events`
+### Bookings
 
-```json
-{
-    "title": "Laravel Conference",
-    "description": "Laravel Workshop",
-    "location": "Cairo",
-    "start_date": "2026-07-01 10:00:00",
-    "end_date": "2026-07-01 18:00:00"
-}
-```
+| Method | Endpoint                   |
+| ------ | -------------------------- |
+| POST   | /api/tickets/{ticket}/book |
+
+## Advanced Laravel Features Used
+
+* JWT Authentication
+* Form Requests
+* API Resources
+* Eloquent Relationships
+* Route Model Binding
+* Authorization Policies
+* Gates
+* Rate Limiting
+* Database Transactions
+* Middleware Protection
 
 ## Installation
 
 ### Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/event-management-platform.git
+git clone https://github.com/mennaabdelelhady/event-management-platform.git
 cd event-management-platform
 ```
 
@@ -120,7 +219,6 @@ cd event-management-platform
 
 ```bash
 composer install
-npm install
 ```
 
 ### Configure Environment
@@ -131,10 +229,11 @@ cp .env.example .env
 
 Update database credentials inside `.env`.
 
-### Generate Application Key
+### Generate Keys
 
 ```bash
 php artisan key:generate
+php artisan jwt:secret
 ```
 
 ### Run Migrations
@@ -155,48 +254,33 @@ Application will be available at:
 http://127.0.0.1:8000
 ```
 
-## Project Structure
-
-```text
-app/
-├── Http/
-│   ├── Controllers/
-│   │   └── Api/
-│   ├── Requests/
-│   └── Resources/
-├── Models/
-│   ├── User.php
-│   └── Event.php
-└── Policies/
-
-routes/
-└── api.php
-```
-
 ## Current Progress
 
 * [x] Laravel Setup
 * [x] GitHub Integration
-* [x] Authentication
+* [x] JWT Authentication
 * [x] User Roles
-* [x] Event Migration
-* [x] Event Model
 * [x] Event CRUD API
-* [x] API Resources
-* [x] Validation
+* [x] Event Resources
+* [x] Event Validation
+* [x] Ticket Management
+* [x] Ticket Booking System
+* [x] Database Transactions
+* [x] Authorization Policies
+* [x] Gates
+* [x] Rate Limiting
 
 ## Upcoming Features
 
-* Sanctum Authentication
-* Authorization Policies
 * Event Image Uploads
-* Ticket Management
-* Ticket Booking
+* Booking Resources
+* My Bookings Endpoint
 * QR Code Generation
-* Notifications
+* Email Notifications
 * API Documentation
 * Automated Testing
+* Dashboard Statistics
 
 ## Author
 
-Menna AbdelElhady
+**Menna AbdelElhady**

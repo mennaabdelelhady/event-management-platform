@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\BookingController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -27,5 +28,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get(
         'events/{event}/tickets',
         [TicketController::class, 'index']
+    );
+    Route::post(
+        '/tickets/{ticket}/book',
+        [BookingController::class, 'store']
     );
 });

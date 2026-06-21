@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\BookingController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware('throttle:5,1');
 
 Route::middleware('auth:api')->group(function () {
 
@@ -32,5 +33,5 @@ Route::middleware('auth:api')->group(function () {
     Route::post(
         '/tickets/{ticket}/book',
         [BookingController::class, 'store']
-    );
+    )->middleware('throttle:10,1');
 });
